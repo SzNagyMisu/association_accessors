@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "association_accessors"
+require 'dummy'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
