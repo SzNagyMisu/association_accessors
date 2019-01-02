@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    association_accessors (1.0.0)
+    association_accessors (1.1.0)
 
 GEM
   remote: https://rubygems.org/

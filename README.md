@@ -54,6 +54,15 @@ class User < ActiveRecord::Base
 end
 ```
 
+## Config
+
+It is possible to set a default value for the keyword `with_attribute:`, for example in an initializer:
+
+```ruby
+# config/initializers/association_accessors.rb
+AssociationAccessors.default_attribute = :serial
+```
+
 ## Usage
 
 1. include the module `AssociationAccessors`.
@@ -188,7 +197,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## TODOS
 
-* [ ] possibility to set default value for `:with_attribute` in an initializer
+* [x] possibility to set default value for `:with_attribute` in an initializer
 * [ ] possibility to define custom method name for the accessors (?)
 
 ## Contributing
