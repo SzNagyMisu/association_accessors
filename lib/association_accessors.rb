@@ -1,6 +1,7 @@
 require "association_accessors/version"
 require "association_accessors/singular_association"
 require "association_accessors/collection_association"
+require "association_accessors/test/matcher"
 
 module AssociationAccessors
   class << self

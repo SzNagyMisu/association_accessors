@@ -2,17 +2,28 @@
 
 **association_accessors** is a tool for generating accessors for `ActiveRecord` model associations based on columns other than the `id` (primary key).
 
-## Installation
+## Table of Contents
+<!--ts-->
+   * [AssociationAccessors](#associationaccessors)
+      * [Table of Contents](#table-of-contents)
+      * [The Challenge](#the-challenge)
+      * [Installation](#installation)
+      * [Config](#config)
+      * [Usage](#usage)
+         * [With belongs_to](#with-belongs_to)
+         * [With has_one](#with-has_one)
+         * [With has_many](#with-has_many)
+         * [With has_and_belongs_to_many](#with-has_and_belongs_to_many)
+         * [With custom association names](#with-custom-association-names)
+         * [With polymorphic associations](#with-polymorphic-associations)
+      * [Test matcher](#test-matcher)
+      * [TODO](#todo)
+      * [Contributing](#contributing)
+      * [License](#license)
 
-Add this line to your application's Gemfile:
+<!-- Added by: misu, at: 2019-01-18T16:19+01:00 -->
 
-```ruby
-gem 'association_accessors', git: 'https://github.com/SzNagyMisu/association_accessors.git'
-```
-
-And then execute:
-
-    $ bundle
+<!--te-->
 
 ## The Challenge
 
@@ -53,6 +64,21 @@ class User < ActiveRecord::Base
   association_accessor_for :company, with_attribute: :serial
 end
 ```
+
+## Installation
+
+Requirements:
+* ruby >= 2.0
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'association_accessors', git: 'https://github.com/SzNagyMisu/association_accessors.git'
+```
+
+And then execute:
+
+    $ bundle
 
 ## Config
 
@@ -195,10 +221,25 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 -->
 
-## TODOS
+## Test matcher
 
-* [x] possibility to set default value for `:with_attribute` in an initializer
-* [ ] possibility to define custom method name for the accessors (?)
+**association_accessors** ships a test matcher too: `#have_association_accessor_for`. It surely works with [rspec](https://relishapp.com/rspec).
+
+```ruby
+RSpec.configure do |config|
+  config.include AssociationAccessors::Test
+end
+
+RSpec.describe User, type: :model do
+  it { should have_association_accessor_for(:company).with_attribute(:serial) }
+end
+```
+
+So far, it checks if the reader and writer methods are defined on the subject, nothing more.
+
+## TODO
+
+* [ ] test against older rails versions
 
 ## Contributing
 
