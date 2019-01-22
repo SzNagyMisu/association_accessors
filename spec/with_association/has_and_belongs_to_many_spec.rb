@@ -21,7 +21,21 @@ RSpec.describe 'for `has_and_belongs_to_many` association' do
       expect { author_2.publisher_uuids = [ publisher_1.uuid ] }.to change { author_2.publishers.ids }.from([ publisher_2.id ]).to [ publisher_1.id ]
     end
 
-    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.' do
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '4' ] do
+      expect { author_2.publisher_uuids = [ publisher_1.uuid, publisher_2.uuid.next ] }
+        .to raise_exception(ActiveRecord::RecordNotFound,
+      %{Couldn't find all Publishers with 'id': ("#{publisher_1.uuid}", "#{publisher_2.uuid.next}")} +
+      %{ (found 1 results, but was looking for 2)})
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '5.0', '5.1' ] do
+      expect { author_2.publisher_uuids = [ publisher_1.uuid, publisher_2.uuid.next ] }
+        .to raise_exception(ActiveRecord::RecordNotFound,
+      %{Couldn't find all Publishers with 'uuid': ("#{publisher_1.uuid}", "#{publisher_2.uuid.next}")} +
+      %{ (found 1 results, but was looking for 2)})
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '5.2' ] do
       expect { author_2.publisher_uuids = [ publisher_1.uuid, publisher_2.uuid.next ] }
         .to raise_exception(ActiveRecord::RecordNotFound,
       %{Couldn't find all Publishers with 'uuid': ("#{publisher_1.uuid}", "#{publisher_2.uuid.next}")} +

@@ -61,10 +61,12 @@ class Author < Serialable
 end
 
 class Book < Serialable
-  belongs_to :author, optional: true
+  OPTIONAL = ActiveRecord.gem_version.segments.first == 5 ? { optional: true } : {}
+
+  belongs_to :author, OPTIONAL
   association_accessor_for :author, with_attribute: :serial
 
-  belongs_to :writer, optional: true, class_name: 'Author', foreign_key: :author_id
+  belongs_to :writer, { class_name: 'Author', foreign_key: :author_id }.merge(OPTIONAL)
   association_accessor_for :writer, with_attribute: :serial
 
   has_one :address, through: :author

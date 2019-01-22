@@ -22,7 +22,11 @@ RSpec.describe 'for `belongs_to` association' do
       expect { book.author_serial = new_author.serial }.to change(book, :author).from(author).to new_author
     end
 
-    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.' do
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.1' ] do
+      expect { book.author_serial = author.serial.next }.to raise_exception ActiveRecord::RecordNotFound
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.2', '5' ] do
       expect { book.author_serial = author.serial.next }.to raise_exception ActiveRecord::RecordNotFound, "Couldn't find Author"
     end
   end

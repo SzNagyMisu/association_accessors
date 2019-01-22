@@ -21,7 +21,21 @@ RSpec.describe 'for `has_many` association' do
       expect { author_2.book_serials = [ book_1.serial ] }.to change { author_2.books.ids }.from([]).to [ book_1.id ]
     end
 
-    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.' do
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '4' ] do
+      expect { author_2.book_serials = [ book_1.serial, book_2.serial.next ] }
+        .to raise_exception(ActiveRecord::RecordNotFound,
+      %{Couldn't find all Books with 'id': ("#{book_1.serial}", "#{book_2.serial.next}")} +
+      %{ (found 1 results, but was looking for 2)})
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '5.0', '5.1' ] do
+      expect { author_2.book_serials = [ book_1.serial, book_2.serial.next ] }
+        .to raise_exception(ActiveRecord::RecordNotFound,
+      %{Couldn't find all Books with 'serial': ("#{book_1.serial}", "#{book_2.serial.next}")} +
+      %{ (found 1 results, but was looking for 2)})
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '5.2' ] do
       expect { author_2.book_serials = [ book_1.serial, book_2.serial.next ] }
         .to raise_exception(ActiveRecord::RecordNotFound,
       %{Couldn't find all Books with 'serial': ("#{book_1.serial}", "#{book_2.serial.next}")} +

@@ -1,8 +1,11 @@
 RSpec.configure do |config|
   config.include AssociationAccessors::Test
+
+  # only the matcher should be tested against older version of RSpec
+  config.filter_run matcher: true if RSPEC_MAJOR_VERSION == 2
 end
 
-RSpec.describe 'the test matcher' do
+RSpec.describe 'the test matcher', matcher: true do
   subject { Author.new }
 
   it 'raises ActiveRecord::AssociationNotFoundError if the association does not exist on subject.' do

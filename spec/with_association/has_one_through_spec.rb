@@ -1,4 +1,4 @@
-RSpec.describe 'for `has_one` association' do
+RSpec.describe 'for `has_one :through` association' do
   let!(:author)  { Author.create! }
   let!(:book)    { author.books.create! }
   let!(:address) { author.create_address! }
@@ -18,14 +18,25 @@ RSpec.describe 'for `has_one` association' do
       expect { book.address_serial = nil }.to change(book, :address).from(address).to nil
     end
 
-    it 'raises ActiveRecord::HasOneThroughCantAssociateThroughHasOneOrManyReflection.' do
+    it 'raises ActiveRecord::HasManyThroughCantAssociateThroughHasOneOrManyReflection.', activerecord: [ '4' ] do
+      new_address = Address.create!
+      expect { book.address_serial = new_address.serial }
+        .to raise_exception(ActiveRecord::HasManyThroughCantAssociateThroughHasOneOrManyReflection,
+      %{Cannot modify association 'Book#address' because the source reflection class 'Address' is associated to 'Author' via :has_one.})
+    end
+
+    it 'raises ActiveRecord::HasOneThroughCantAssociateThroughHasOneOrManyReflection.', activerecord: [ '5' ] do
       new_address = Address.create!
       expect { book.address_serial = new_address.serial }
         .to raise_exception(ActiveRecord::HasOneThroughCantAssociateThroughHasOneOrManyReflection,
       %{Cannot modify association 'Book#address' because the source reflection class 'Address' is associated to 'Author' via :has_one.})
     end
 
-    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.' do
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.1' ] do
+      expect { book.address_serial = address.serial.next }.to raise_exception ActiveRecord::RecordNotFound
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.2', '5' ] do
       expect { book.address_serial = address.serial.next }.to raise_exception ActiveRecord::RecordNotFound, "Couldn't find Address"
     end
   end

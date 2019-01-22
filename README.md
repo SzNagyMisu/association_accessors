@@ -2,28 +2,31 @@
 
 **association_accessors** is a tool for generating accessors for `ActiveRecord` model associations based on columns other than the `id` (primary key).
 
+## Dependencies
+
+* **ruby** `'>=2.3'`
+* **activerecord** `'>=4.1', '<6.0'`
+* **rspec** `'>= 2.0'` (for the test matcher)
+
 ## Table of Contents
-<!--ts-->
-   * [AssociationAccessors](#associationaccessors)
-      * [Table of Contents](#table-of-contents)
-      * [The Challenge](#the-challenge)
-      * [Installation](#installation)
-      * [Config](#config)
-      * [Usage](#usage)
-         * [With belongs_to](#with-belongs_to)
-         * [With has_one](#with-has_one)
-         * [With has_many](#with-has_many)
-         * [With has_and_belongs_to_many](#with-has_and_belongs_to_many)
-         * [With custom association names](#with-custom-association-names)
-         * [With polymorphic associations](#with-polymorphic-associations)
-      * [Test matcher](#test-matcher)
-      * [TODO](#todo)
-      * [Contributing](#contributing)
-      * [License](#license)
 
-<!-- Added by: misu, at: 2019-01-18T16:19+01:00 -->
-
-<!--te-->
+* [AssociationAccessors](#associationaccessors)
+  * [Dependencies](#dependencies)
+  * [Table of Contents](#table-of-contents)
+  * [The Challenge](#the-challenge)
+  * [Installation](#installation)
+  * [Config](#config)
+  * [Usage](#usage)
+    * [With belongs_to](#with-belongs_to)
+    * [With has_one](#with-has_one)
+    * [With has_many](#with-has_many)
+    * [With has_and_belongs_to_many](#with-has_and_belongs_to_many)
+    * [With custom association names](#with-custom-association-names)
+    * [With polymorphic associations](#with-polymorphic-associations)
+  * [Test matcher](#test-matcher)
+  * [Contributing](#contributing)
+  * [Development](#development)
+  * [License](#license)
 
 ## The Challenge
 
@@ -67,13 +70,10 @@ end
 
 ## Installation
 
-Requirements:
-* ruby >= 2.0
-
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'association_accessors', git: 'https://github.com/SzNagyMisu/association_accessors.git'
+gem 'association_accessors'
 ```
 
 And then execute:
@@ -213,21 +213,13 @@ end
 * The `has_one` and `has_many` parts work just fine, setting the `imageable_type` and `imageable_id` to `nil` or the class name and the `id` of the required record
 * It is **not** recommended to use `association_accessors` for the `belongs_to` part of polymorphic associations, as the associated class is derived from the actual value of `[association_name]_type` column, causing unpredictable behavior and raising `NoMethodError` when it is `nil`
 
-<!--
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
--->
-
 ## Test matcher
 
 **association_accessors** ships a test matcher too: `#have_association_accessor_for`. It surely works with [rspec](https://relishapp.com/rspec).
 
 ```ruby
 RSpec.configure do |config|
-  config.include AssociationAccessors::Test
+  config.include AssociationAccessors::Test, type: :model
 end
 
 RSpec.describe User, type: :model do
@@ -237,13 +229,25 @@ end
 
 So far, it checks if the reader and writer methods are defined on the subject, nothing more.
 
-## TODO
-
-* [ ] test against older rails versions
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/SzNagyMisu/association_accessors.
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To test against other `activerecord` or `rspec` versions, check the `./Appraisals` file and choose one:
+
+    $ bundle exec appraisal activerecord-5.0 bin/console
+    $ bundle exec appraisal activerecord-5.0 rspec
+
+To run a full test suite (including multiple ruby, activerecord and rspec versions), run:
+
+    $ rake full_test
+    $ RUBY_VERSIONS=2.5.3,2.6.1 rake full_test
+
+Setting the environment variable `RUBY_VERSIONS` overrides the default (`2.3.7`, `2.4.1`, `2.5.1`) ruby versions to test against. Note that while the ruby versions must be installed for the test to run, the gems are handled by [appraisal](https://github.com/thoughtbot/appraisal).
 
 ## License
 

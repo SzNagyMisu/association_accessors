@@ -22,7 +22,11 @@ RSpec.describe 'for polymorphic `has_one` association' do
       expect { author.image_serial = new_image.serial }.to change(author, :image).from(image).to new_image
     end
 
-    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.' do
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.1' ] do
+      expect { author.image_serial = image.serial.next }.to raise_exception ActiveRecord::RecordNotFound
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.2', '5' ] do
       expect { author.image_serial = image.serial.next }.to raise_exception ActiveRecord::RecordNotFound, "Couldn't find Image"
     end
   end

@@ -27,7 +27,11 @@ RSpec.describe 'for polymorphic `belongs_to` association' do
       expect { image.imageable_serial = author.serial }.to raise_exception NoMethodError, %{undefined method `find_by!' for nil:NilClass}
     end
 
-    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.' do
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.1' ] do
+      expect { image.imageable_serial = author.serial.next }.to raise_exception ActiveRecord::RecordNotFound
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if record with `[attribute]` = `value` does not exist.', activerecord: [ '4.2', '5' ] do
       expect { image.imageable_serial = author.serial.next }.to raise_exception ActiveRecord::RecordNotFound, "Couldn't find Author"
     end
   end

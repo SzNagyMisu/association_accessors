@@ -20,7 +20,21 @@ RSpec.describe 'for polymorphic `has_many` association' do
       expect { book.image_serials = [ image_1.serial ] }.to change { book.images.ids }.from([]).to [ image_1.id ]
     end
 
-    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.' do
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '4' ] do
+      expect { book.image_serials = [ image_1.serial, image_2.serial.next ] }
+        .to raise_exception(ActiveRecord::RecordNotFound,
+      %{Couldn't find all Images with 'id': ("#{image_1.serial}", "#{image_2.serial.next}")} +
+      %{ (found 1 results, but was looking for 2)})
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '5.0', '5.1' ] do
+      expect { book.image_serials = [ image_1.serial, image_2.serial.next ] }
+        .to raise_exception(ActiveRecord::RecordNotFound,
+      %{Couldn't find all Images with 'serial': ("#{image_1.serial}", "#{image_2.serial.next}")} +
+      %{ (found 1 results, but was looking for 2)})
+    end
+
+    it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '5.2' ] do
       expect { book.image_serials = [ image_1.serial, image_2.serial.next ] }
         .to raise_exception(ActiveRecord::RecordNotFound,
       %{Couldn't find all Images with 'serial': ("#{image_1.serial}", "#{image_2.serial.next}")} +
