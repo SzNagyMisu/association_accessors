@@ -4,8 +4,8 @@
 
 ## Dependencies
 
-* **ruby** `'>=2.3'`
-* **activerecord** `'>=4.1', '<6.0'`
+* **ruby** `'>= 2.3.0'`
+* **activerecord** `'>= 4.1.7', '< 6.0'`
 * **rspec** `'>= 2.0'` (for the test matcher)
 
 ## Table of Contents
