@@ -33,6 +33,16 @@ ActiveRecord::Schema.define do
     t.string :imageable_type
     t.integer :imageable_id
   end
+
+  create_table :cases do |t|
+    t.string :serial
+  end
+
+  create_table :things do |t|
+    t.string :serial
+    t.integer :case_id
+  end
+
 end
 
 class Serialable < ActiveRecord::Base
@@ -96,4 +106,14 @@ end
 class Image < Serialable
   belongs_to :imageable, polymorphic: true
   association_accessor_for :imageable, with_attribute: :serial
+end
+
+class Case < Serialable
+  has_many :things
+  association_accessor_for :things, with_attribute: :serial
+end
+
+class Thing < Serialable
+  belongs_to :case, optional: true
+  association_accessor_for :case, with_attribute: :serial
 end
