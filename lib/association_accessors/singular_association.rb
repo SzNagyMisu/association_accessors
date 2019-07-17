@@ -5,7 +5,7 @@ module AssociationAccessors
 
       mixin.class_eval <<-CODE, __FILE__, __LINE__ + 1
         def #{association}_#{attribute}
-          #{association}&.#{attribute}
+          send(:#{association})&.#{attribute}
         end
 
         def #{association}_#{attribute}= value

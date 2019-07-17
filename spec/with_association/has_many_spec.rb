@@ -4,6 +4,9 @@ RSpec.describe 'for `has_many` association' do
   let!(:book_1)   { Book.create! author: author_1 }
   let!(:book_2)   { Book.create! author: author_1 }
 
+  let!(:kase) { Case.create! }
+  let!(:thing) { Thing.create! }
+
   it 'generates `#[association_name.singularize]_[attribute_name.pluralize]` accessor.' do
     expect(author_1).to respond_to :book_serials, :book_serials=
   end
@@ -19,6 +22,7 @@ RSpec.describe 'for `has_many` association' do
     it 'sets the association value to the records queried by `[attribute]` = `value` if all exist.' do
       expect { author_1.book_serials = [] }.to change { author_1.books.ids }.from([ book_1.id, book_2.id ]).to []
       expect { author_2.book_serials = [ book_1.serial ] }.to change { author_2.books.ids }.from([]).to [ book_1.id ]
+      expect { thing.case_serial = kase.serial }.to change { thing.case_id }.from( nil ).to kase.id
     end
 
     it 'raises ActiveRecord::RecordNotFound if any of the given `values` has no record.', activerecord: [ '4' ] do
